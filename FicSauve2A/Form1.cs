@@ -66,7 +66,7 @@ namespace FicSauve2A
 
         private void button6_Click(object sender, EventArgs e)
         {
-            fff
+            
         }
     }
 }
