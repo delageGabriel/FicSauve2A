@@ -29,7 +29,7 @@ namespace FicSauve2A
         public cErreur ecrireIni(string sectionName, string keyName, string valeur)
         {
             cErreur res = new cErreur();
-
+            data = parser.ReadFile(chemin);
             try
             {
                 data[sectionName][keyName] = valeur;

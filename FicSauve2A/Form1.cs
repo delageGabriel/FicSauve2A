@@ -16,11 +16,12 @@ namespace FicSauve2A
     public partial class Form1 : Form
     {
         private cFTP ftp;
-
+        private INI ini;
         public Form1()
         {
             InitializeComponent();
             ftp = new cFTP("ftp://home.guion.ovh/", "ficsauve2a", "ficsauve2a");
+            ini = new INI(@"C:\Users\Dev\Desktop\FicSauve2A\FicSauve2A\test.ini");
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -61,12 +62,18 @@ namespace FicSauve2A
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            cErreur retour = ini.ecrireIni("PECPLUS", "GUID", "123456789");
+            if (retour.bErreur)
+            {
+                MessageBox.Show(retour.message);
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            
+            string retour = ini.lireIni("PECPLUS", "GUID");
+            MessageBox.Show(retour);
+
         }
     }
 }
