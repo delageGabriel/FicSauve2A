@@ -62,7 +62,7 @@ namespace FicSauve2A
 
         private void button5_Click(object sender, EventArgs e)
         {
-            cErreur retour = ini.ecrireIni("PECPLUS", "GUID", "123456789");
+            cErreur retour = ini.ecrireIni("FFFFFFF", "GUID", "123456789");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
