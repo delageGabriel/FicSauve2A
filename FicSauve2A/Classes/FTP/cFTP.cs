@@ -211,13 +211,18 @@ namespace FicSauve2A
             return Res;
         }
 
-        public cErreur dossierRecursifTransfert(string cheminDuDossier)
+        public cErreur dossierRecursifTransfert(string cheminDuDossier, string pDossier)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
 
             FtpState state = new FtpState();
 
+            MessageBox.Show($"Création de: {pDossier}");
+            FtpWebRequest requestDossier = (FtpWebRequest)WebRequest.Create(target + pDossier);
+            requestDossier.Method = WebRequestMethods.Ftp.MakeDirectory;
+            requestDossier.Credentials = cred;
+            requestDossier.GetResponse().Close();
             IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
             foreach (string fichier in fichiers)
             {
@@ -225,7 +230,7 @@ namespace FicSauve2A
                 {
                     MessageBox.Show($"Transfert de: {fichier}");
                     request.Credentials = cred;
-                    request.UploadFile(target + Path.GetFileName(fichier), fichier);
+                    request.UploadFile(target + pDossier + "/" + Path.GetFileName(fichier), fichier);
                 }
             }
 
@@ -237,10 +242,9 @@ namespace FicSauve2A
                 try
                 {
                     MessageBox.Show($"Création de: {name}");
-                    FtpWebRequest requestDir = (FtpWebRequest)WebRequest.Create(target + name);
+                    FtpWebRequest requestDir = (FtpWebRequest)WebRequest.Create(target + pDossier + "/" + name);
                     requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
                     requestDir.Credentials = cred;
-                                        
                     requestDir.GetResponse().Close();
                     IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(cheminDuDossier + @"\" + name);
                     foreach (string fichier in fichiersDeux)
@@ -249,7 +253,7 @@ namespace FicSauve2A
                         {
                             MessageBox.Show($"Transfert de: {fichier}");
                             request.Credentials = cred;
-                            request.UploadFile(target + name + "/" + Path.GetFileName(fichier), fichier);
+                            request.UploadFile(target + pDossier + "/" + name + "/" + Path.GetFileName(fichier), fichier);
                         }
                     }
 

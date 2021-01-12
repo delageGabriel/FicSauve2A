@@ -78,7 +78,7 @@ namespace FicSauve2A
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infos ftp");
+            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp", "Infosftp");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
