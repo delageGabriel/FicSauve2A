@@ -211,7 +211,7 @@ namespace FicSauve2A
             return Res;
         }
 
-        public cErreur dossierRecursifTransfert(string cheminDuDossier, string pDossier)
+        public cErreur dossierRecursifTransfert(string cheminDuDossier)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
@@ -232,7 +232,6 @@ namespace FicSauve2A
             IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
             foreach (string dossier in dossiers)
             {
-                string antiSlash = @"\";
                 string name = Path.GetFileName(dossier);
 
                 try
@@ -241,17 +240,18 @@ namespace FicSauve2A
                     FtpWebRequest requestDir = (FtpWebRequest)WebRequest.Create(target + name);
                     requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
                     requestDir.Credentials = cred;
-                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(cheminDuDossier + antiSlash + name);
+                                        
+                    requestDir.GetResponse().Close();
+                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(cheminDuDossier + @"\" + name);
                     foreach (string fichier in fichiersDeux)
                     {
                         using (WebClient request = new WebClient())
                         {
                             MessageBox.Show($"Transfert de: {fichier}");
                             request.Credentials = cred;
-                            request.UploadFile(target + Path.GetFileName(fichier), fichier);
+                            request.UploadFile(target + name + "/" + Path.GetFileName(fichier), fichier);
                         }
                     }
-                    requestDir.GetResponse().Close();
 
                 }
                 catch (WebException ex)
@@ -274,4 +274,3 @@ namespace FicSauve2A
         }
     }
 }
-
