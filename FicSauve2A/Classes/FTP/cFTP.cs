@@ -232,6 +232,7 @@ namespace FicSauve2A
             IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
             foreach (string dossier in dossiers)
             {
+                string antiSlash = @"\";
                 string name = Path.GetFileName(dossier);
 
                 try
@@ -240,6 +241,16 @@ namespace FicSauve2A
                     FtpWebRequest requestDir = (FtpWebRequest)WebRequest.Create(target + name);
                     requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
                     requestDir.Credentials = cred;
+                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(cheminDuDossier + antiSlash + name);
+                    foreach (string fichier in fichiersDeux)
+                    {
+                        using (WebClient request = new WebClient())
+                        {
+                            MessageBox.Show($"Transfert de: {fichier}");
+                            request.Credentials = cred;
+                            request.UploadFile(target + Path.GetFileName(fichier), fichier);
+                        }
+                    }
                     requestDir.GetResponse().Close();
 
                 }
