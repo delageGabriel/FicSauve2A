@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -167,7 +168,7 @@ namespace FicSauve2A
         /// <param name="pFichier"></param>
         /// <param name="cheminDuFichier"></param>
         /// <returns></returns>
-        public cErreur transfertFichier(string pFichier, string cheminDuFichier)
+        public cErreur fichierTransfert(string pFichier, string cheminDuFichier)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
@@ -209,5 +210,57 @@ namespace FicSauve2A
             // Retourne le résultat sous la forme d'une chaîne de caractère
             return Res;
         }
+
+        public cErreur dossierRecursifTransfert(string cheminDuDossier, string pDossier)
+        {
+            // Instanciation de l'objet Res de la classe cErreur
+            cErreur Res = new cErreur();
+
+            FtpState state = new FtpState();
+
+            IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
+            foreach (string fichier in fichiers)
+            {
+                using (WebClient request = new WebClient())
+                {
+                    MessageBox.Show($"Transfert de: {fichier}");
+                    request.Credentials = cred;
+                    request.UploadFile(target + Path.GetFileName(fichier), fichier);
+                }
+            }
+
+            IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
+            foreach (string dossier in dossiers)
+            {
+                string name = Path.GetFileName(dossier);
+
+                try
+                {
+                    MessageBox.Show($"Création de: {name}");
+                    FtpWebRequest requestDir = (FtpWebRequest)WebRequest.Create(target + name);
+                    requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+                    requestDir.Credentials = cred;
+                    requestDir.GetResponse().Close();
+
+                }
+                catch (WebException ex)
+                {
+                    FtpWebResponse response = (FtpWebResponse)ex.Response;
+                    if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                    {
+                        Res.bErreur = true;
+                        Res.message = state.OperationException.Message;
+                    }
+                    else
+                    {
+                        // L'accesseur de l'objet Res est se voit assigné la valeur « false » ; il n'y aura donc pas de message d'erreur
+                        Res.bErreur = false;
+                        Res.message = state.StatusDescription;
+                    }
+                }
+            }
+            return Res;
+        }
     }
 }
+

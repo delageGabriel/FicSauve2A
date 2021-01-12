@@ -21,12 +21,12 @@ namespace FicSauve2A
         {
             InitializeComponent();
             ftp = new cFTP("ftp://home.guion.ovh/", "ficsauve2a", "ficsauve2a");
-            ini = new INI(@"C:\Users\Dev\Desktop\FicSauve2A\FicSauve2A\test.ini");
+            ini = new INI(@"C:\Users\Utilisateur\source\repos\FicSauve2A\test.ini");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.transfertFichier("test.txt", @"C:\Users\Dev\Desktop\Infos ftp.txt");
+            cErreur retour = ftp.fichierTransfert("test.txt", @"C:\Users\Utilisateur\Desktop\Infos ftp.txt");
             if(retour.bErreur)
             {
                 MessageBox.Show(retour.message);
@@ -71,9 +71,18 @@ namespace FicSauve2A
 
         private void button6_Click(object sender, EventArgs e)
         {
-            string retour = ini.lireIni("PECPLUS", "GUID");
+            string retour = ini.lireIni("FFFFFFF", "GUID");
             MessageBox.Show(retour);
 
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infos ftp", @"Infos ftp\");
+            if(retour.bErreur)
+            {
+                MessageBox.Show(retour.message);
+            }
         }
     }
 }
