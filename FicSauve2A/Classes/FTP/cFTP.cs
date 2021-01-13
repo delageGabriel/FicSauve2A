@@ -71,13 +71,13 @@ namespace FicSauve2A
         /// </summary>
         /// <param name="pDossier"></param>
         /// <returns></returns>
-        public cErreur creerDossier(string pDossier)
+        public cErreur creerDossier(string pDossier, string cheminDeDestination)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
 
             // Instanciation de l'objet request de la classe FtpWebRequest, avec la requête qui contiendra l'URI + le nom du dossier à créer
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(target + pDossier + "/");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(cheminDeDestination + pDossier + "/");
 
             // La méthode de la classe WebRequest à utiliser est « MakeDirectory »
             request.Method = WebRequestMethods.Ftp.MakeDirectory;
@@ -211,67 +211,66 @@ namespace FicSauve2A
             return Res;
         }
 
-        public cErreur dossierRecursifTransfert(string cheminDuDossier, string pDossier)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cheminDuDossier"></param>
+        /// <param name="pDossier"></param>
+        /// <returns></returns>
+        public cErreur dossierRecursifTransfert(string cheminDuDossier, string pDossier, string cheminFichier)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
 
-            FtpState state = new FtpState();
-
-            MessageBox.Show($"Création de: {pDossier}");
-            FtpWebRequest requestDossier = (FtpWebRequest)WebRequest.Create(target + pDossier);
-            requestDossier.Method = WebRequestMethods.Ftp.MakeDirectory;
-            requestDossier.Credentials = cred;
-            requestDossier.GetResponse().Close();
-            IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
-            foreach (string fichier in fichiers)
+            try
             {
-                using (WebClient request = new WebClient())
+               
+                creerDossier(pDossier, "ftp://home.guion.ovh/");
+
+
+                IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
+                foreach (string fichier in fichiers)
                 {
+
                     MessageBox.Show($"Transfert de: {fichier}");
-                    request.Credentials = cred;
-                    request.UploadFile(target + pDossier + "/" + Path.GetFileName(fichier), fichier);
+                    string cheminDestination = pDossier + "/";
+                    fichierTransfert(cheminDestination + Path.GetFileName(fichier), cheminFichier);
+                    
                 }
+            } 
+            catch (Exception e)
+            {
+                Res.bErreur = true;
+                Res.message = e.Message;
             }
 
+
+            ////////////////
             IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
             foreach (string dossier in dossiers)
             {
                 string name = Path.GetFileName(dossier);
 
+
                 try
                 {
-                    MessageBox.Show($"Création de: {name}");
-                    FtpWebRequest requestDir = (FtpWebRequest)WebRequest.Create(target + pDossier + "/" + name);
-                    requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
-                    requestDir.Credentials = cred;
-                    requestDir.GetResponse().Close();
-                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(cheminDuDossier + @"\" + name);
+                    
+                    creerDossier(name, "ftp://home.guion.ovh/" + pDossier + "/");
+
+                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(dossier);
                     foreach (string fichier in fichiersDeux)
                     {
-                        using (WebClient request = new WebClient())
-                        {
-                            MessageBox.Show($"Transfert de: {fichier}");
-                            request.Credentials = cred;
-                            request.UploadFile(target + pDossier + "/" + name + "/" + Path.GetFileName(fichier), fichier);
-                        }
+                        MessageBox.Show($"Transfert de: {fichier}");
+                        string cheminDestination = pDossier + "/" + name + "/";
+                        fichierTransfert(cheminDestination + Path.GetFileName(fichier), fichier);                        
                     }
 
                 }
-                catch (WebException ex)
+                catch (Exception e)
                 {
-                    FtpWebResponse response = (FtpWebResponse)ex.Response;
-                    if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
-                    {
-                        Res.bErreur = true;
-                        Res.message = state.OperationException.Message;
-                    }
-                    else
-                    {
-                        // L'accesseur de l'objet Res est se voit assigné la valeur « false » ; il n'y aura donc pas de message d'erreur
-                        Res.bErreur = false;
-                        Res.message = state.StatusDescription;
-                    }
+                    Res.bErreur = true;
+                    Res.message = e.Message;
                 }
             }
             return Res;

@@ -44,8 +44,8 @@ namespace FicSauve2A
 
         private void button3_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.creerDossier("test");
-            if(retour.bErreur)
+            cErreur retour = ftp.creerDossier("test", "ftp://home.guion.ovh/");
+            if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
             }
@@ -78,7 +78,7 @@ namespace FicSauve2A
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp", "Infosftp");
+            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", "Infosftp", @"C:\Users\Utilisateur\Desktop\Infosftp\Infosftp.txt");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
