@@ -20,14 +20,15 @@ namespace FicSauve2A
         public Form1()
         {
             InitializeComponent();
-            ftp = new cFTP("ftp://home.guion.ovh/", "ficsauve2a", "ficsauve2a");
             ini = new INI(@"C:\Users\Utilisateur\source\repos\FicSauve2A\test.ini");
+
+            ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), ini.lireIni("ServeurFTP", "MP"));
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             cErreur retour = ftp.fichierTransfert("test.txt", @"C:\Users\Utilisateur\Desktop\Infos ftp.txt");
-            if(retour.bErreur)
+            if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
             }
@@ -36,7 +37,7 @@ namespace FicSauve2A
         private void button2_Click(object sender, EventArgs e)
         {
             cErreur retour = ftp._supprimeDossier("test");
-            if(retour.bErreur)
+            if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
             }
@@ -44,7 +45,7 @@ namespace FicSauve2A
 
         private void button3_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.creerDossier("test", "ftp://home.guion.ovh/");
+            cErreur retour = ftp.creerDossier("test");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
@@ -54,7 +55,7 @@ namespace FicSauve2A
         private void button4_Click(object sender, EventArgs e)
         {
             cErreur retour = ftp.renommeFichier("test.txt", "test2.txt");
-            if(retour.bErreur)
+            if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
             }
@@ -62,7 +63,7 @@ namespace FicSauve2A
 
         private void button5_Click(object sender, EventArgs e)
         {
-            cErreur retour = ini.ecrireIni("FFFFFFF", "GUID", "123456789");
+            cErreur retour = ini.ecrireIni("FFFFFFF", "GUID", "ABCDEFG");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
@@ -78,11 +79,21 @@ namespace FicSauve2A
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", "Infosftp", @"C:\Users\Utilisateur\Desktop\Infosftp\Infosftp.txt");
+            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
             }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            List<string> retour = ini.lireRepertoire();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            ini.sauvegarderRepertoire();
         }
     }
 }

@@ -71,13 +71,13 @@ namespace FicSauve2A
         /// </summary>
         /// <param name="pDossier"></param>
         /// <returns></returns>
-        public cErreur creerDossier(string pDossier, string cheminDeDestination)
+        public cErreur creerDossier(string pDossier)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
 
             // Instanciation de l'objet request de la classe FtpWebRequest, avec la requête qui contiendra l'URI + le nom du dossier à créer
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(cheminDeDestination + pDossier + "/");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(target + pDossier + "/");
 
             // La méthode de la classe WebRequest à utiliser est « MakeDirectory »
             request.Method = WebRequestMethods.Ftp.MakeDirectory;
@@ -218,15 +218,18 @@ namespace FicSauve2A
         /// <param name="cheminDuDossier"></param>
         /// <param name="pDossier"></param>
         /// <returns></returns>
-        public cErreur dossierRecursifTransfert(string cheminDuDossier, string pDossier, string cheminFichier)
+        public cErreur dossierRecursifTransfert(string cheminDuDossier)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
 
+            string dossierRacine = Path.GetDirectoryName(cheminDuDossier);
+            dossierRacine = dossierRacine.Split('\\').Last<string>();
+
             try
             {
                
-                creerDossier(pDossier, "ftp://home.guion.ovh/");
+                creerDossier(dossierRacine);
 
 
                 IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
@@ -234,8 +237,8 @@ namespace FicSauve2A
                 {
 
                     MessageBox.Show($"Transfert de: {fichier}");
-                    string cheminDestination = pDossier + "/";
-                    fichierTransfert(cheminDestination + Path.GetFileName(fichier), cheminFichier);
+                    string cheminDestination = dossierRacine + "/";
+                    fichierTransfert(cheminDestination + Path.GetFileName(fichier), cheminDuDossier + Path.GetFileName(fichier));
                     
                 }
             } 
@@ -250,19 +253,19 @@ namespace FicSauve2A
             IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
             foreach (string dossier in dossiers)
             {
-                string name = Path.GetFileName(dossier);
+                string name = dossier.Split('\\').Last<string>();
 
 
                 try
                 {
                     
-                    creerDossier(name, "ftp://home.guion.ovh/" + pDossier + "/");
+                    creerDossier(dossierRacine + "/" + name);
 
                     IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(dossier);
                     foreach (string fichier in fichiersDeux)
                     {
                         MessageBox.Show($"Transfert de: {fichier}");
-                        string cheminDestination = pDossier + "/" + name + "/";
+                        string cheminDestination = dossierRacine + "/" + name + "/";
                         fichierTransfert(cheminDestination + Path.GetFileName(fichier), fichier);                        
                     }
 
