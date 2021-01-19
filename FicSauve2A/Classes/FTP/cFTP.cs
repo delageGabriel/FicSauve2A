@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,14 +13,19 @@ namespace FicSauve2A
 {
     public class cFTP
     {
+        
         private Uri target;
         private NetworkCredential cred;
+
 
         public cFTP(string pUrl, string pUser, string pPassword)
         {
             target = new Uri(pUrl);
             cred = new NetworkCredential(pUser, pPassword);
+            
         }
+
+        
 
         /// <summary>
         /// Méthode qui va supprimer le dossier avec le nom passé en paramètres
@@ -97,7 +103,7 @@ namespace FicSauve2A
                 Res.message = response.StatusDescription;
 
                 // Petit message pour confirmer que le fichier a bien été créé
-                MessageBox.Show($"Le dossier {pDossier} a bien été créé !");
+                //MessageBox.Show($"Le dossier {pDossier} a bien été créé !");
                 response.Close();
             }
             catch (Exception e)
@@ -168,7 +174,7 @@ namespace FicSauve2A
         /// <param name="pFichier"></param>
         /// <param name="cheminDuFichier"></param>
         /// <returns></returns>
-        public cErreur fichierTransfert(string pFichier, string cheminDuFichier)
+        public cErreur fichierTransfert(string pFichier, string cheminDuFichier, ProgressBar progressBar, BackgroundWorker worker)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
@@ -187,13 +193,30 @@ namespace FicSauve2A
             state.Request = request;
             state.FileName = cheminDuFichier;
             waitObject = state.OperationComplete;
-            request.BeginGetRequestStream(
-                new AsyncCallback(AsynchronousFtpUpLoader.EndGetStreamCallback),
-                state
-            );
+            //request.BeginGetRequestStream(
+            //    new AsyncCallback(AsynchronousFtpUpLoader.EndGetStreamCallback),
+            //    state
+            //);
 
-            // Block the current thread until all operations are complete.
-            waitObject.WaitOne();
+            using (Stream fileStream = File.OpenRead(cheminDuFichier))
+            using (Stream ftpStream = request.GetRequestStream())
+            {
+                if (progressBar != null)
+                    progressBar.Invoke(
+                        (MethodInvoker)delegate { progressBar.Maximum = (int)fileStream.Length; });
+
+                byte[] buffer = new byte[10240];
+                int read;
+                while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ftpStream.Write(buffer, 0, read);
+                    worker.ReportProgress((int)(fileStream.Position * 100 / fileStream.Length)); 
+                }
+                fileStream.Close();
+                ftpStream.Close();
+            }
+            
+           waitObject.WaitOne();
 
             if (state.OperationException != null)
             {
@@ -218,7 +241,7 @@ namespace FicSauve2A
         /// <param name="cheminDuDossier"></param>
         /// <param name="pDossier"></param>
         /// <returns></returns>
-        public cErreur dossierRecursifTransfert(string cheminDuDossier)
+        public cErreur dossierRecursifTransfert(string cheminDuDossier, ProgressBar progressBar, BackgroundWorker worker, bool bRecursif = false)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
@@ -228,20 +251,20 @@ namespace FicSauve2A
 
             try
             {
-               
-                creerDossier(dossierRacine);
 
+                creerDossier(dossierRacine);
+                
 
                 IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
                 foreach (string fichier in fichiers)
                 {
 
-                    MessageBox.Show($"Transfert de: {fichier}");
+                    //MessageBox.Show($"Transfert de: {fichier}");
                     string cheminDestination = dossierRacine + "/";
-                    fichierTransfert(cheminDestination + Path.GetFileName(fichier), cheminDuDossier + Path.GetFileName(fichier));
-                    
+                    Task.Run(() => fichierTransfert(cheminDestination + Path.GetFileName(fichier), cheminDuDossier + Path.GetFileName(fichier),progressBar, worker));
+
                 }
-            } 
+            }
             catch (Exception e)
             {
                 Res.bErreur = true;
@@ -249,34 +272,40 @@ namespace FicSauve2A
             }
 
 
-            ////////////////
-            IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
-            foreach (string dossier in dossiers)
+            if (bRecursif)
             {
-                string name = dossier.Split('\\').Last<string>();
-
-
-                try
+                ////////////////
+                IEnumerable<string> dossiers = Directory.EnumerateDirectories(cheminDuDossier);
+                foreach (string dossier in dossiers)
                 {
-                    
-                    creerDossier(dossierRacine + "/" + name);
+                    string name = dossier.Split('\\').Last<string>();
 
-                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(dossier);
-                    foreach (string fichier in fichiersDeux)
+
+                    try
                     {
-                        MessageBox.Show($"Transfert de: {fichier}");
-                        string cheminDestination = dossierRacine + "/" + name + "/";
-                        fichierTransfert(cheminDestination + Path.GetFileName(fichier), fichier);                        
-                    }
 
-                }
-                catch (Exception e)
-                {
-                    Res.bErreur = true;
-                    Res.message = e.Message;
+                        creerDossier(dossierRacine + "/" + name);
+
+                        IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(dossier);
+                        foreach (string fichier in fichiersDeux)
+                        {
+                            //MessageBox.Show($"Transfert de: {fichier}");
+                            string cheminDestination = dossierRacine + "/" + name + "/";
+                            Task.Run(() => fichierTransfert(cheminDestination + Path.GetFileName(fichier), fichier, progressBar, worker));
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Res.bErreur = true;
+                        Res.message = e.Message;
+                    }
                 }
             }
+
             return Res;
         }
+
+       
     }
 }

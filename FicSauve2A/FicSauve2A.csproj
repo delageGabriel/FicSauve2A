@@ -49,11 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\cCryptage.cs" />
+    <Compile Include="Classes\cRepASauvegarder.cs" />
     <Compile Include="Classes\FTP\AsynchronousFtpUpLoader.cs" />
     <Compile Include="Classes\FTP\cErreur.cs" />
     <Compile Include="Classes\FTP\cFTP.cs" />
     <Compile Include="Classes\FTP\FtpState.cs" />
     <Compile Include="Classes\INI.cs" />
+    <Compile Include="Classes\ProgressReport.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

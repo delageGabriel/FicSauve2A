@@ -14,10 +14,12 @@ namespace FicSauve2A
         public string chemin { get; set; }
         private IniData data;
         private FileIniDataParser parser;
+
         public INI(string chemin)
         {
             this.chemin = chemin;
             parser = new FileIniDataParser();
+            
         }
 
         public string lireIni(string sectionName, string keyName)
@@ -27,57 +29,41 @@ namespace FicSauve2A
             return res;
         }
 
-        public List<string> lireRepertoire()
+        public List<cRepASauvegarder> getDirectoryToSave()
         {
-            data = parser.ReadFile(chemin);
-
             bool play = true;
             int i = 1;
-            List<string> listRep = new List<string>();
+            List<cRepASauvegarder> listRep = new List<cRepASauvegarder>();
             string fmt = "000.##";
 
 
             while (play)
             {
 
-                string resTemp = lireIni("Repertoires", "Rep_" + i.ToString(fmt));
+                string path = lireIni("Repertoires", "Rep_" + i.ToString(fmt));
 
+                string sRecursif = lireIni("RepertoiresRecursif", "Rep_" + i.ToString(fmt));
+                bool bRecursif = (sRecursif == "1");
 
-                if (resTemp == "")
+                if (path == null)
                 {
                     play = false;
                 }
                 else
                 {
-                    listRep.Add(resTemp);
+                    cRepASauvegarder temp = new cRepASauvegarder(path, bRecursif);
+                    listRep.Add(temp);
                 }
 
                 i++;
+
+
             }
 
             return listRep;
 
         }
-
-        public void sauvegarderRepertoire()
-        {
-            data = parser.ReadFile(chemin);
-
-            bool play = true;
-            int i = 1;
-            string fmt = "000.##";
-
-
-            while (play)
-            {
-
-                string resTemp = lireIni("RepertoiresRecursif", "Rep_" + i.ToString(fmt));
-
-                i++;
-            }
-
-
-        }
+               
 
         public cErreur ecrireIni(string sectionName, string keyName, string valeur)
         {
@@ -97,16 +83,6 @@ namespace FicSauve2A
             }
 
             return res;
-        }
-
-        public string test()
-        {
-            int value = 160934;
-            int decimalLength = value.ToString("D").Length + 5;
-            return value.ToString("D" + decimalLength.ToString());
-            // The example displays the following output:
-            //       00000160934
-            //       00000274A6
         }
     }
 }
