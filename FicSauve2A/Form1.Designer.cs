@@ -38,7 +38,6 @@
             this.button8 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.lblPourcentage = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.button9 = new System.Windows.Forms.Button();
@@ -153,18 +152,10 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
-            // lblPourcentage
-            // 
-            this.lblPourcentage.AutoSize = true;
-            this.lblPourcentage.Location = new System.Drawing.Point(499, 288);
-            this.lblPourcentage.Name = "lblPourcentage";
-            this.lblPourcentage.Size = new System.Drawing.Size(21, 13);
-            this.lblPourcentage.TabIndex = 7;
-            this.lblPourcentage.Text = "0%";
-            // 
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(272, 304);
+            this.progressBar.Maximum = 0;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(248, 23);
             this.progressBar.TabIndex = 9;
@@ -198,7 +189,6 @@
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.lblPourcentage);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Form1";
@@ -206,7 +196,6 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -222,7 +211,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Label lblPourcentage;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button button9;

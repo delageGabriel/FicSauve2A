@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\cCryptage.cs" />
+    <Compile Include="Classes\cFichier.cs" />
     <Compile Include="Classes\cRepASauvegarder.cs" />
     <Compile Include="Classes\FTP\AsynchronousFtpUpLoader.cs" />
     <Compile Include="Classes\FTP\cErreur.cs" />

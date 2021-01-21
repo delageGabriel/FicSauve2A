@@ -17,12 +17,10 @@ namespace FicSauve2A
         private Uri target;
         private NetworkCredential cred;
 
-
         public cFTP(string pUrl, string pUser, string pPassword)
         {
             target = new Uri(pUrl);
             cred = new NetworkCredential(pUser, pPassword);
-            
         }
 
         
@@ -174,62 +172,80 @@ namespace FicSauve2A
         /// <param name="pFichier"></param>
         /// <param name="cheminDuFichier"></param>
         /// <returns></returns>
-        public cErreur fichierTransfert(string pFichier, string cheminDuFichier, ProgressBar progressBar, BackgroundWorker worker)
+        public cErreur fichierTransfert(List<cFichier> fichiers, ProgressBar progressBar, int TailleMax = 0)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
-
-            ManualResetEvent waitObject;
             FtpState state = new FtpState();
 
-            // Instanciation de l'objet request de la classe FtpWebRequest, avec la requête qui contiendra l'URI + le nom du fichier à transférer
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(target + pFichier);
+            int valeurEnCoursPB = 0;
 
-            // La méthode de la classe WebRequest à utiliser est « UploadFile »
-            request.Method = WebRequestMethods.Ftp.UploadFile;
-
-            // Récupère l'identifiant et le mot de passe du serveur FTP
-            request.Credentials = cred;
-            state.Request = request;
-            state.FileName = cheminDuFichier;
-            waitObject = state.OperationComplete;
-            //request.BeginGetRequestStream(
-            //    new AsyncCallback(AsynchronousFtpUpLoader.EndGetStreamCallback),
-            //    state
-            //);
-
-            using (Stream fileStream = File.OpenRead(cheminDuFichier))
-            using (Stream ftpStream = request.GetRequestStream())
+            foreach (cFichier fichier in fichiers)
             {
-                if (progressBar != null)
-                    progressBar.Invoke(
-                        (MethodInvoker)delegate { progressBar.Maximum = (int)fileStream.Length; });
 
-                byte[] buffer = new byte[10240];
-                int read;
-                while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                //ManualResetEvent waitObject;
+
+                // Instanciation de l'objet request de la classe FtpWebRequest, avec la requête qui contiendra l'URI + le nom du fichier à transférer
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(target + fichier.cheminDistant);
+
+                // La méthode de la classe WebRequest à utiliser est « UploadFile »
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+
+                // Récupère l'identifiant et le mot de passe du serveur FTP
+                request.Credentials = cred;
+                state.Request = request;
+                state.FileName = fichier.cheminLocal;
+                //waitObject = state.OperationComplete;
+                //request.BeginGetRequestStream(
+                //    new AsyncCallback(AsynchronousFtpUpLoader.EndGetStreamCallback),
+                //    state
+                //);
+
+                using (Stream fileStream = File.OpenRead(fichier.cheminLocal))
+                using (Stream ftpStream = request.GetRequestStream())
                 {
-                    ftpStream.Write(buffer, 0, read);
-                    worker.ReportProgress((int)(fileStream.Position * 100 / fileStream.Length)); 
+
+                    if (TailleMax == 0)
+                    {
+                        TailleMax = (int)fileStream.Length;
+                    }
+                    else
+                    {
+                        fichier.taille = (int)fileStream.Length;
+                    }
+
+                    progressBar.Invoke(
+                        (MethodInvoker)delegate { progressBar.Maximum = TailleMax; });
+
+                    byte[] buffer = new byte[42867898];
+                    int read;
+                    while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ftpStream.Write(buffer, 0, read);
+                        progressBar.Invoke(
+                           (MethodInvoker)delegate
+                           {
+                               progressBar.Value = valeurEnCoursPB + (int)fileStream.Position;
+                           });
+                    }
                 }
-                fileStream.Close();
-                ftpStream.Close();
-            }
-            
-           waitObject.WaitOne();
 
-            if (state.OperationException != null)
-            {
-                Res.bErreur = true;
-                Res.message = state.OperationException.Message;
-            }
-            else
-            {
-                // L'accesseur de l'objet Res est se voit assigné la valeur « false » ; il n'y aura donc pas de message d'erreur
-                Res.bErreur = false;
-                Res.message = state.StatusDescription;
-            }
+                //waitObject.WaitOne();
 
+                valeurEnCoursPB += fichier.taille;
+
+                if (state.OperationException != null)
+                {
+                    Res.bErreur = true;
+                    Res.message = state.OperationException.Message;
+                }
+                else
+                {
+                    // L'accesseur de l'objet Res est se voit assigné la valeur « false » ; il n'y aura donc pas de message d'erreur
+                    Res.bErreur = false;
+                    Res.message = state.StatusDescription;
+                }
+            }
             // Retourne le résultat sous la forme d'une chaîne de caractère
             return Res;
         }
@@ -241,34 +257,36 @@ namespace FicSauve2A
         /// <param name="cheminDuDossier"></param>
         /// <param name="pDossier"></param>
         /// <returns></returns>
-        public cErreur dossierRecursifTransfert(string cheminDuDossier, ProgressBar progressBar, BackgroundWorker worker, bool bRecursif = false)
+        public cErreur dossierRecursifTransfert(string cheminDuDossier, ProgressBar progressBar, bool bRecursif = false)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
 
+            int tailleMax = 0;
+            List<cFichier> fichiersATransferer = new List<cFichier>();
+
             string dossierRacine = Path.GetDirectoryName(cheminDuDossier);
             dossierRacine = dossierRacine.Split('\\').Last<string>();
 
-            try
-            {
-
-                creerDossier(dossierRacine);
+            creerDossier(dossierRacine);
                 
-
-                IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
-                foreach (string fichier in fichiers)
-                {
-
-                    //MessageBox.Show($"Transfert de: {fichier}");
-                    string cheminDestination = dossierRacine + "/";
-                    Task.Run(() => fichierTransfert(cheminDestination + Path.GetFileName(fichier), cheminDuDossier + Path.GetFileName(fichier),progressBar, worker));
-
-                }
-            }
-            catch (Exception e)
+            IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
+            foreach (string fichier in fichiers)
             {
-                Res.bErreur = true;
-                Res.message = e.Message;
+                string cheminDestination = dossierRacine + "/";
+
+                cFichier tmp = new cFichier();
+                tmp.cheminLocal = cheminDuDossier + Path.GetFileName(fichier);
+                tmp.cheminDistant = cheminDestination + Path.GetFileName(fichier);
+
+                using (Stream fileStream = File.OpenRead(tmp.cheminLocal))
+                {
+                    tmp.taille = (int)fileStream.Length;
+                    tailleMax += tmp.taille;
+                }
+
+                fichiersATransferer.Add(tmp);
+
             }
 
 
@@ -280,27 +298,37 @@ namespace FicSauve2A
                 {
                     string name = dossier.Split('\\').Last<string>();
 
+                    creerDossier(dossierRacine + "/" + name);
 
-                    try
+                    IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(dossier);
+                    foreach (string fichier in fichiersDeux)
                     {
+                        string cheminDestination = dossierRacine + "/" + name + "/";
 
-                        creerDossier(dossierRacine + "/" + name);
+                        cFichier tmp = new cFichier();
+                        tmp.cheminLocal = fichier;
+                        tmp.cheminDistant = cheminDestination + Path.GetFileName(fichier);
 
-                        IEnumerable<string> fichiersDeux = Directory.EnumerateFiles(dossier);
-                        foreach (string fichier in fichiersDeux)
+                        using (Stream fileStream = File.OpenRead(tmp.cheminLocal))
                         {
-                            //MessageBox.Show($"Transfert de: {fichier}");
-                            string cheminDestination = dossierRacine + "/" + name + "/";
-                            Task.Run(() => fichierTransfert(cheminDestination + Path.GetFileName(fichier), fichier, progressBar, worker));
+                            tmp.taille = (int)fileStream.Length;
+                            tailleMax += tmp.taille;
                         }
 
+                        fichiersATransferer.Add(tmp);
                     }
-                    catch (Exception e)
-                    {
-                        Res.bErreur = true;
-                        Res.message = e.Message;
-                    }
+
                 }
+            }
+
+            try
+            {
+                Task.Run(() => fichierTransfert(fichiersATransferer, progressBar, tailleMax));
+            }
+            catch (Exception e)
+            {
+                Res.bErreur = true;
+                Res.message = e.Message;
             }
 
             return Res;

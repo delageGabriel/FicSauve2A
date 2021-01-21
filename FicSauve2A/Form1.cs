@@ -15,26 +15,31 @@ namespace FicSauve2A
 {
     public partial class Form1 : Form
     {
-        BackgroundWorker worker = new BackgroundWorker();
+
         private cFTP ftp;
         private INI ini;
         public Form1()
         {
             InitializeComponent();
-            worker.WorkerSupportsCancellation = true;
-            worker.WorkerReportsProgress = true;
-
-            worker.ProgressChanged += Worker_ProgressChanged;
-            worker.DoWork += Worker_DoWork;
+            
             ini = new INI(@"C:\Users\Utilisateur\source\repos\FicSauve2A\test.ini");
             ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.lireIni("ServeurFTP", "MP")));
+
+            backgroundWorker1.WorkerReportsProgress = true;
         }
 
 
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Task.Run(() => ftp.fichierTransfert("test.txt", @"C:\Users\Utilisateur\Desktop\Infos ftp.txt", progressBar, worker));           
+
+            cFichier tmp = new cFichier();
+            tmp.cheminLocal = @"C:\Users\Utilisateur\Desktop\Infos ftp.txt";
+            tmp.cheminDistant = "test.txt";
+            List<cFichier> listeTMP = new List<cFichier>();
+            listeTMP.Add(tmp);
+
+            Task.Run(() => ftp.fichierTransfert(listeTMP, progressBar));           
 
         }
 
@@ -84,7 +89,7 @@ namespace FicSauve2A
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", progressBar, worker, true);
+            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", progressBar, true);
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
@@ -96,7 +101,7 @@ namespace FicSauve2A
             List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
             foreach (cRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.path + "\\", progressBar, worker, rep.bRecursif);
+                ftp.dossierRecursifTransfert(rep.path + "\\", progressBar, rep.bRecursif);
             }
         }
         private void progressBar_Click(object sender, EventArgs e)
@@ -115,19 +120,9 @@ namespace FicSauve2A
             
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
-            foreach (cRepASauvegarder rep in listRepASauvegarder)
-            {
-                ftp.dossierRecursifTransfert(rep.path + "\\", progressBar, worker, rep.bRecursif);
-            }
-        }
-
-        public void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
-            lblPourcentage.Text = progressBar.Value.ToString() + "%";
         }
     }
 }
