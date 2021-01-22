@@ -214,19 +214,26 @@ namespace FicSauve2A
                         fichier.taille = (int)fileStream.Length;
                     }
 
-                    progressBar.Invoke(
-                        (MethodInvoker)delegate { progressBar.Maximum = TailleMax; });
-
-                    byte[] buffer = new byte[42867898];
-                    int read;
-                    while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    if (progressBar != null)
                     {
-                        ftpStream.Write(buffer, 0, read);
                         progressBar.Invoke(
-                           (MethodInvoker)delegate
-                           {
-                               progressBar.Value = valeurEnCoursPB + (int)fileStream.Position;
-                           });
+                            (MethodInvoker)delegate { progressBar.Maximum = TailleMax; });
+                    }
+
+                        byte[] buffer = new byte[42867898];
+                        int read;
+                        while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            ftpStream.Write(buffer, 0, read);
+
+                        if (progressBar != null)
+                        {
+                            progressBar.Invoke(
+                               (MethodInvoker)delegate
+                               {
+                                   progressBar.Value = valeurEnCoursPB + (int)fileStream.Position;
+                               });
+                        }
                     }
                 }
 
