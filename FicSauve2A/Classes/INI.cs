@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using IniParser;
 using IniParser.Model;
 
@@ -14,12 +16,13 @@ namespace FicSauve2A
         public string chemin { get; set; }
         private IniData data;
         private FileIniDataParser parser;
+        private cFTP ftp;
 
         public INI(string chemin)
         {
             this.chemin = chemin;
             parser = new FileIniDataParser();
-            
+            ftp = new cFTP(lireIni("ServeurFTP", "AdresseServeur"), lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(lireIni("ServeurFTP", "MP")));
         }
 
         public string lireIni(string sectionName, string keyName)
@@ -83,6 +86,34 @@ namespace FicSauve2A
             }
 
             return res;
+        }
+
+        public string checkVersion(string cheminFichierIniLocal, string cheminFichierIniServeur)
+        {
+            string fichierRecupIniLocal;
+            string fichierRecupIniServeur;
+
+
+            chemin = cheminFichierIniLocal;
+            fichierRecupIniLocal = lireIni("Version", "Version");
+
+            ftp.downloadFile("version.ini", "version.ini");
+
+            chemin = cheminFichierIniServeur;
+            fichierRecupIniServeur = chemin;
+            fichierRecupIniServeur = lireIni("Version", "Version");
+
+
+            if (fichierRecupIniLocal != fichierRecupIniServeur)
+            {
+                MessageBox.Show("La version n'est pas à jour !");
+            }
+            else
+            {
+                MessageBox.Show("Les deux versions sont identiques");
+            }
+
+            return fichierRecupIniLocal;
         }
     }
 }

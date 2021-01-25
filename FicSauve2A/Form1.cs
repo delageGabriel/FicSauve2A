@@ -22,7 +22,7 @@ namespace FicSauve2A
         {
             InitializeComponent();
             
-            ini = new INI(@"C:\Users\Utilisateur\source\repos\FicSauve2A\test.ini");
+            ini = new INI(@"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\test.ini");
             ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.lireIni("ServeurFTP", "MP")));
 
             backgroundWorker1.WorkerReportsProgress = true;
@@ -123,6 +123,12 @@ namespace FicSauve2A
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            string retour = ini.checkVersion(@"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\version.ini", "version.ini");
+            MessageBox.Show(retour);
         }
     }
 }

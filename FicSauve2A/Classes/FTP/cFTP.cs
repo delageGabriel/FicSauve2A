@@ -13,7 +13,7 @@ namespace FicSauve2A
 {
     public class cFTP
     {
-        
+
         private Uri target;
         private NetworkCredential cred;
 
@@ -23,7 +23,7 @@ namespace FicSauve2A
             cred = new NetworkCredential(pUser, pPassword);
         }
 
-        
+
 
         /// <summary>
         /// Méthode qui va supprimer le dossier avec le nom passé en paramètres
@@ -220,11 +220,11 @@ namespace FicSauve2A
                             (MethodInvoker)delegate { progressBar.Maximum = TailleMax; });
                     }
 
-                        byte[] buffer = new byte[42867898];
-                        int read;
-                        while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            ftpStream.Write(buffer, 0, read);
+                    byte[] buffer = new byte[42867898];
+                    int read;
+                    while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ftpStream.Write(buffer, 0, read);
 
                         if (progressBar != null)
                         {
@@ -276,7 +276,7 @@ namespace FicSauve2A
             dossierRacine = dossierRacine.Split('\\').Last<string>();
 
             creerDossier(dossierRacine);
-                
+
             IEnumerable<string> fichiers = Directory.EnumerateFiles(cheminDuDossier);
             foreach (string fichier in fichiers)
             {
@@ -341,6 +341,19 @@ namespace FicSauve2A
             return Res;
         }
 
-       
+        public cErreur downloadFile(string cheminLocalTelechargement, string nomFichier)
+        {
+            cErreur Res = new cErreur();
+
+            WebClient client = new WebClient();
+            client.Credentials = cred;
+            client.DownloadFile(
+                target + nomFichier, cheminLocalTelechargement);
+
+
+
+            return Res;
+        }
+
     }
 }

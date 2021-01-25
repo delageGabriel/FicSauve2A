@@ -14,14 +14,14 @@ namespace FicSauve2A
         [STAThread]
         static void Main(string[] args)
         {
-            INI ini = new INI(@"C:\Users\Utilisateur\source\repos\FicSauve2A\test.ini");
+            INI ini = new INI(@"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\test.ini");
             cFTP ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.lireIni("ServeurFTP", "MP")));
             
             if (args.Length > 0)
             {
                 cFichier tmp = new cFichier();
-                tmp.cheminLocal = @"C:\Users\Utilisateur\Desktop\Infos ftp.txt";
-                tmp.cheminDistant = "test.txt";
+                tmp.cheminLocal = @"C:\Users\Utilisateur\Desktop\version.ini";
+                tmp.cheminDistant = "version.ini";
                 List<cFichier> listeTMP = new List<cFichier>();
                 listeTMP.Add(tmp);
                 ftp.fichierTransfert(listeTMP, null);
@@ -32,7 +32,8 @@ namespace FicSauve2A
                     ftp.dossierRecursifTransfert(rep.path + "\\", null, rep.bRecursif);
                 }
 
-
+                
+                Console.WriteLine("Le transfert s'est bien passé !");
             }
             else
             {
@@ -40,6 +41,8 @@ namespace FicSauve2A
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Form1());
             }
+
+            Console.ReadKey();
         }
     }
 }
