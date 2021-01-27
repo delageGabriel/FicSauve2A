@@ -3,44 +3,37 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FicSauve2A
 {
-    public partial class Form1 : Form
+    public partial class Sauvegarde : Form
     {
-
         private cFTP ftp;
         private INI ini;
-        public Form1()
+        public Sauvegarde()
         {
             InitializeComponent();
-            
+
             ini = new INI(@"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\test.ini");
             ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.lireIni("ServeurFTP", "MP")));
 
-            backgroundWorker1.WorkerReportsProgress = true;
         }
-
-
 
         private void button1_Click(object sender, EventArgs e)
         {
 
             cFichier tmp = new cFichier();
-            tmp.cheminLocal = @"C:\Users\Utilisateur\Desktop\Infos ftp.txt";
-            tmp.cheminDistant = "test.txt";
+            tmp.cheminLocal = @"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\FicSauve2A\bin\Sauvegarde";
+            tmp.cheminDistant = "Sauvegarde.exe";
             List<cFichier> listeTMP = new List<cFichier>();
             listeTMP.Add(tmp);
 
-            Task.Run(() => ftp.fichierTransfert(listeTMP, progressBar));           
-
+            Task.Run(() => ftp.fichierTransfert(listeTMP, null));
+            Application.Exit();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -49,6 +42,7 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
+                Application.Exit();
             }
         }
 
@@ -58,6 +52,7 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
+                Application.Exit();
             }
         }
 
@@ -67,6 +62,7 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
+                Application.Exit();
             }
         }
 
@@ -77,6 +73,7 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
+                Application.Exit();
             }
         }
 
@@ -84,15 +81,16 @@ namespace FicSauve2A
         {
             string retour = ini.lireIni("FFFFFFF", "GUID");
             MessageBox.Show(retour);
-
+            Application.Exit();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", progressBar, true);
+            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", null, true);
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
+                Application.Exit();
             }
         }
 
@@ -101,28 +99,16 @@ namespace FicSauve2A
             List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
             foreach (cRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.path + "\\", progressBar, rep.bRecursif);
+                ftp.dossierRecursifTransfert(rep.path + "\\", null, rep.bRecursif);
             }
-        }
-        private void progressBar_Click(object sender, EventArgs e)
-        {
-
+            Application.Exit();
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
             string retour = cCryptage.Encrypt(ini.lireIni("ServeurFTP", "MP"));
             MessageBox.Show(retour);
-        }
-
-        private void button10_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            progressBar.Value = e.ProgressPercentage;
+            Application.Exit();
         }
 
         private void button11_Click(object sender, EventArgs e)

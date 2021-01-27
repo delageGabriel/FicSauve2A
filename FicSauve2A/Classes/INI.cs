@@ -88,7 +88,8 @@ namespace FicSauve2A
             return res;
         }
 
-        public string checkVersion(string cheminFichierIniLocal, string cheminFichierIniServeur)
+        
+        public string checkVersion(string cheminFichierIniLocal, string cheminFichierIniServeur, bool update = false)
         {
             string fichierRecupIniLocal;
             string fichierRecupIniServeur;
@@ -97,7 +98,7 @@ namespace FicSauve2A
             chemin = cheminFichierIniLocal;
             fichierRecupIniLocal = lireIni("Version", "Version");
 
-            ftp.downloadFile("version.ini", "version.ini");
+            ftp.downloadFile(cheminFichierIniServeur, "version.ini");
 
             chemin = cheminFichierIniServeur;
             fichierRecupIniServeur = chemin;
@@ -106,14 +107,22 @@ namespace FicSauve2A
 
             if (fichierRecupIniLocal != fichierRecupIniServeur)
             {
-                MessageBox.Show("La version n'est pas à jour !");
+                MessageBox.Show($"La version n'est pas à jour ! La version du serveur est {fichierRecupIniServeur}");
+                update = true;
+                if (update == true)
+                {
+                    ftp.downloadFile("Sauvegarde", "Update.exe");
+                }
             }
             else
             {
                 MessageBox.Show("Les deux versions sont identiques");
             }
 
-            return fichierRecupIniLocal;
+            
+
+            return "Version locale = " + fichierRecupIniLocal;
         }
+        
     }
 }
