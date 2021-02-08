@@ -27,13 +27,12 @@ namespace FicSauve2A
         {
 
             cFichier tmp = new cFichier();
-            tmp.cheminLocal = @"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\FicSauve2A\bin\Sauvegarde";
-            tmp.cheminDistant = "Sauvegarde.exe";
+            tmp.cheminLocal = @"C:\Users\Utilisateur\Desktop\version.ini";
+            tmp.cheminDistant = "version.ini";
             List<cFichier> listeTMP = new List<cFichier>();
             listeTMP.Add(tmp);
 
             Task.Run(() => ftp.fichierTransfert(listeTMP, null));
-            Application.Exit();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -42,7 +41,6 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
-                Application.Exit();
             }
         }
 
@@ -52,7 +50,6 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
-                Application.Exit();
             }
         }
 
@@ -62,7 +59,6 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
-                Application.Exit();
             }
         }
 
@@ -73,7 +69,6 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
-                Application.Exit();
             }
         }
 
@@ -81,7 +76,6 @@ namespace FicSauve2A
         {
             string retour = ini.lireIni("FFFFFFF", "GUID");
             MessageBox.Show(retour);
-            Application.Exit();
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -90,7 +84,6 @@ namespace FicSauve2A
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
-                Application.Exit();
             }
         }
 
@@ -101,14 +94,12 @@ namespace FicSauve2A
             {
                 ftp.dossierRecursifTransfert(rep.path + "\\", null, rep.bRecursif);
             }
-            Application.Exit();
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
             string retour = cCryptage.Encrypt(ini.lireIni("ServeurFTP", "MP"));
             MessageBox.Show(retour);
-            Application.Exit();
         }
 
         private void button11_Click(object sender, EventArgs e)

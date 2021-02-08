@@ -49,14 +49,14 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Update|AnyCPU' ">
     <OutputPath>bin\CheckVersionIni\</OutputPath>
-    <DefineConstants>TRACE;UPDATE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UPDATE</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sauvegarde|AnyCPU'">
     <OutputPath>bin\Sauvegarde\</OutputPath>
-    <DefineConstants>TRACE;SAUVEGARDE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;SAUVEGARDE</DefineConstants>
     <Prefer32Bit>true</Prefer32Bit>
     <Optimize>true</Optimize>
   </PropertyGroup>
@@ -85,7 +85,6 @@
     <Compile Include="Classes\FTP\cFTP.cs" />
     <Compile Include="Classes\FTP\FtpState.cs" />
     <Compile Include="Classes\INI.cs" />
-    <Compile Include="Classes\ProgressReport.cs" />
     <Compile Include="FicSauve2A.cs">
       <SubType>Form</SubType>
     </Compile>

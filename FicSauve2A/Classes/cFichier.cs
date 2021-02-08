@@ -8,6 +8,9 @@ namespace FicSauve2A
 {
     public class cFichier
     {
+        /////////////////////////////////////////////////////////// 
+        ///                    ATTRIBUTS
+        ///////////////////////////////////////////////////////////
         public string cheminLocal { get; set; }
         public string cheminDistant { get; set; }
         public int taille { get; set; }
