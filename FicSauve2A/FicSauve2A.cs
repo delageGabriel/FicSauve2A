@@ -33,10 +33,10 @@ namespace FicSauve2A
         private void button1_Click(object sender, EventArgs e)
         {
 
-            cFichier tmp = new cFichier();
-            tmp.cheminLocal = @"Sauvegarde\Sauvegarde.exe";
-            tmp.cheminDistant = "Sauvegarde.exe";
-            List<cFichier> listeTMP = new List<cFichier>();
+            CFichier tmp = new CFichier();
+            tmp.CheminLocal = @"Sauvegarde\Sauvegarde.exe";
+            tmp.CheminDistant = "Sauvegarde.exe";
+            List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
 
             Task.Run(() => ftp.fichierTransfert(listeTMP, progressBar));           

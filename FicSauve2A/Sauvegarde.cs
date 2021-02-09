@@ -26,10 +26,10 @@ namespace FicSauve2A
         private void button1_Click(object sender, EventArgs e)
         {
 
-            cFichier tmp = new cFichier();
-            tmp.cheminLocal = @"C:\Users\Utilisateur\Desktop\version.ini";
-            tmp.cheminDistant = "version.ini";
-            List<cFichier> listeTMP = new List<cFichier>();
+            CFichier tmp = new CFichier();
+            tmp.CheminLocal = @"C:\Users\Utilisateur\Desktop\version.ini";
+            tmp.CheminDistant = "version.ini";
+            List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
 
             Task.Run(() => ftp.fichierTransfert(listeTMP, null));

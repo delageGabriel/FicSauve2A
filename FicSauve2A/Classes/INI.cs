@@ -1,39 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using IniParser;
-using IniParser.Model;
+﻿// <copyright file="INI.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace FicSauve2A
 {
-    class INI
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Forms;
+    using IniParser;
+    using IniParser.Model;
+
+    internal class INI
     {
-        /////////////////////////////////////////////////////////// 
-        ///                    ATTRIBUTS
-        /////////////////////////////////////////////////////////// 
-        
-        public string chemin { get; set; }
+        ///////////////////////////////////////////////////////////
+        // ATTRIBUTS
+        ///////////////////////////////////////////////////////////
+
+        public string Chemin { get; set; }
+
         private IniData data;
         private FileIniDataParser parser;
         private cFTP ftp;
 
-        /////////////////////////////////////////////////////////// 
-        ///                    CONSTRUCTEUR
-        /////////////////////////////////////////////////////////// 
-        
+        ///////////////////////////////////////////////////////////
+        // CONSTRUCTEUR
+        ///////////////////////////////////////////////////////////
+
         /// <summary>
+        /// Initializes a new instance of the <see cref="INI"/> class.
         /// Constructeur de la classe INI, qui a comme paramètre le chemin à parcourir pour trouver le fichier ini
-        /// à lire
+        /// à lire.
         /// </summary>
         /// <param name="chemin"></param>
         public INI(string chemin)
         {
-            this.chemin = chemin;
+            this.Chemin = chemin;
             parser = new FileIniDataParser();
             ftp = new cFTP(lireIni("ServeurFTP", "AdresseServeur"), lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(lireIni("ServeurFTP", "MP")));
         }
@@ -50,7 +51,7 @@ namespace FicSauve2A
         /// <returns></returns>
         public string lireIni(string sectionName, string keyName)
         {
-            data = parser.ReadFile(chemin);
+            data = parser.ReadFile(Chemin);
             string res = data[sectionName][keyName];
             return res;
         }
@@ -105,11 +106,11 @@ namespace FicSauve2A
         public cErreur ecrireIni(string sectionName, string keyName, string valeur)
         {
             cErreur res = new cErreur();
-            data = parser.ReadFile(chemin);
+            data = parser.ReadFile(Chemin);
             try
             {
                 data[sectionName][keyName] = valeur;
-                parser.WriteFile(chemin, data);
+                parser.WriteFile(Chemin, data);
                 res.bErreur = false;
                 res.message = "";
             }
@@ -135,13 +136,13 @@ namespace FicSauve2A
             string fichierRecupIniServeur;
 
 
-            chemin = cheminFichierIniLocal;
+            Chemin = cheminFichierIniLocal;
             fichierRecupIniLocal = lireIni("Version", "Version");
 
             ftp.downloadFile(cheminFichierIniServeur, "version.ini");
 
-            chemin = cheminFichierIniServeur;
-            fichierRecupIniServeur = chemin;
+            Chemin = cheminFichierIniServeur;
+            fichierRecupIniServeur = Chemin;
             fichierRecupIniServeur = lireIni("Version", "Version");
 
 

@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace FicSauve2A
 {
-    public class cFichier
+    public class CFichier
     {
-        /////////////////////////////////////////////////////////// 
-        ///                    ATTRIBUTS
         ///////////////////////////////////////////////////////////
-        public string cheminLocal { get; set; }
-        public string cheminDistant { get; set; }
-        public int taille { get; set; }
+        // ATTRIBUTS
+        ///////////////////////////////////////////////////////////
+        public string CheminLocal { get; set; }
+
+        public string CheminDistant { get; set; }
+
+        public int Taille { get; set; }
     }
 }
