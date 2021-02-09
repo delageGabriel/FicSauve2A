@@ -63,7 +63,6 @@ namespace FicSauve2A
         public List<cRepASauvegarder> getDirectoryToSave()
         {
             bool play = true;
-            bool playDeux = true;
             int i = 1;
             List<cRepASauvegarder> listRep = new List<cRepASauvegarder>();
             string fmt = "000.##";

@@ -92,7 +92,7 @@ namespace FicSauve2A
             List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
             foreach (cRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.path + "\\", null, rep.bRecursif);
+                ftp.dossierRecursifTransfert(rep.Path + "\\", null, rep.bRecursif);
             }
         }
 

@@ -26,7 +26,7 @@ namespace FicSauve2A
 
 
         /// <summary>
-        /// Méthode qui va supprimer le dossier avec le nom passé en paramètres
+        /// Méthode qui va supprimer le dossier avec le nom passé en paramètres.
         /// </summary>
         /// <param name="pDossier"></param>
         /// <returns></returns>
@@ -116,7 +116,7 @@ namespace FicSauve2A
 
         /// <summary>
         /// Méthode qui va renommer le fichier avec le nom passé dans le paramètre nouveauNomFichier,
-        /// le nom du fichier à modifier est quant à lui à passer dans le premier paramètre
+        /// le nom du fichier à modifier est quant à lui à passer dans le premier paramètre.
         /// </summary>
         /// <param name="pFichier"></param>
         /// <param name="nouveauNomFichier"></param>
@@ -167,7 +167,7 @@ namespace FicSauve2A
 
         /// <summary>
         /// Méthode qui va transférer le fichier avec le nom passé en paramètre dans pFichier. Le chemin du fichier est à placer
-        /// à la place du deuxième paramètre
+        /// à la place du deuxième paramètre.
         /// </summary>
         /// <param name="pFichier"></param>
         /// <param name="cheminDuFichier"></param>

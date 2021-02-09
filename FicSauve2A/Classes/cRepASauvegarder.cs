@@ -8,13 +8,14 @@ namespace FicSauve2A
 {
     class cRepASauvegarder
     {
-        public string path { get; set; }
+
+        public string Path { get; set; }
 
         public bool bRecursif { get; set; }
 
         public cRepASauvegarder(string pPath, bool pBRecursif)
         {
-            path = pPath;
+            Path = pPath;
             bRecursif = pBRecursif;
         }
 

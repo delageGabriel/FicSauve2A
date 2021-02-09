@@ -101,7 +101,7 @@ namespace FicSauve2A
             List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
             foreach (cRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.path + "\\", progressBar, rep.bRecursif);
+                ftp.dossierRecursifTransfert(rep.Path + "\\", progressBar, rep.bRecursif);
             }
         }
         private void progressBar_Click(object sender, EventArgs e)
