@@ -23,7 +23,7 @@ namespace FicSauve2A
             InitializeComponent();
             
             ini = new INI(@"FicSauve2A\test.ini");
-            ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.lireIni("ServeurFTP", "MP")));
+            ftp = new cFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
 
             
         }
@@ -33,10 +33,10 @@ namespace FicSauve2A
         private void button1_Click(object sender, EventArgs e)
         {
 
-            cFichier tmp = new cFichier();
-            tmp.cheminLocal = @"Sauvegarde\Sauvegarde.exe";
-            tmp.cheminDistant = "Sauvegarde.exe";
-            List<cFichier> listeTMP = new List<cFichier>();
+            CFichier tmp = new CFichier();
+            tmp.CheminLocal = @"Sauvegarde\Sauvegarde.exe";
+            tmp.CheminDistant = "Sauvegarde.exe";
+            List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
 
             Task.Run(() => ftp.fichierTransfert(listeTMP, progressBar));           
@@ -73,7 +73,7 @@ namespace FicSauve2A
 
         private void button5_Click(object sender, EventArgs e)
         {
-            cErreur retour = ini.ecrireIni("FFFFFFF", "GUID", "ABCDEFG");
+            cErreur retour = ini.EcrireIni("FFFFFFF", "GUID", "ABCDEFG");
             if (retour.bErreur)
             {
                 MessageBox.Show(retour.message);
@@ -82,7 +82,7 @@ namespace FicSauve2A
 
         private void button6_Click(object sender, EventArgs e)
         {
-            string retour = ini.lireIni("FFFFFFF", "GUID");
+            string retour = ini.LireIni("FFFFFFF", "GUID");
             MessageBox.Show(retour);
 
         }
@@ -98,10 +98,10 @@ namespace FicSauve2A
 
         private void button8_Click(object sender, EventArgs e)
         {
-            List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
-            foreach (cRepASauvegarder rep in listRepASauvegarder)
+            List<CRepASauvegarder> listRepASauvegarder = ini.GetDirectoryToSave();
+            foreach (CRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.path + "\\", progressBar, rep.bRecursif);
+                ftp.dossierRecursifTransfert(rep.Path + "\\", progressBar, rep.BRecursif);
             }
         }
         private void progressBar_Click(object sender, EventArgs e)
@@ -111,7 +111,7 @@ namespace FicSauve2A
 
         private void button9_Click(object sender, EventArgs e)
         {
-            string retour = cCryptage.Encrypt(ini.lireIni("ServeurFTP", "MP"));
+            string retour = cCryptage.Encrypt(ini.LireIni("ServeurFTP", "MP"));
             MessageBox.Show(retour);
         }
 
@@ -132,7 +132,7 @@ namespace FicSauve2A
 
         private void button11_Click_1(object sender, EventArgs e)
         {
-            string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
+            string retour = ini.CheckVersion(@"FicSauve2A\version.ini", "version.ini");
             MessageBox.Show(retour);
         }
     }

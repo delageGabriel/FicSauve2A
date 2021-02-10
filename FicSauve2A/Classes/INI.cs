@@ -1,80 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using IniParser;
-using IniParser.Model;
+﻿// <copyright file="INI.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace FicSauve2A
 {
-    class INI
+    using System;
+    using System.Collections.Generic;
+    using System.Windows.Forms;
+    using IniParser;
+    using IniParser.Model;
+
+    /// <summary>
+    /// Classe INI.
+    /// </summary>
+    internal class INI
     {
-        /////////////////////////////////////////////////////////// 
-        ///                    ATTRIBUTS
-        /////////////////////////////////////////////////////////// 
-        
-        public string chemin { get; set; }
+        ///////////////////////////////////////////////////////////
+        // ATTRIBUTS
+        ///////////////////////////////////////////////////////////
         private IniData data;
         private FileIniDataParser parser;
         private cFTP ftp;
 
-        /////////////////////////////////////////////////////////// 
-        ///                    CONSTRUCTEUR
-        /////////////////////////////////////////////////////////// 
-        
+        ///////////////////////////////////////////////////////////
+        // CONSTRUCTEUR
+        ///////////////////////////////////////////////////////////
+
         /// <summary>
-        /// Constructeur de la classe INI, qui a comme paramètre le chemin à parcourir pour trouver le fichier ini
-        /// à lire
+        /// Initializes a new instance of the <see cref="INI"/> class.
+        /// Constructeur de la classe INI.
         /// </summary>
-        /// <param name="chemin"></param>
+        /// <param name="chemin">Chemin du fichier ini à utiliser.</param>
         public INI(string chemin)
         {
-            this.chemin = chemin;
-            parser = new FileIniDataParser();
-            ftp = new cFTP(lireIni("ServeurFTP", "AdresseServeur"), lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(lireIni("ServeurFTP", "MP")));
+            this.Chemin = chemin;
+            this.parser = new FileIniDataParser();
+            this.ftp = new cFTP(this.LireIni("ServeurFTP", "AdresseServeur"), this.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(this.LireIni("ServeurFTP", "MP")));
         }
 
-        /////////////////////////////////////////////////////////// 
-        ///                    METHODES
-        /////////////////////////////////////////////////////////// 
-        
+        ///////////////////////////////////////////////////////////
+        // ACCESSEUR/MUTATEUR
+        ///////////////////////////////////////////////////////////
+
         /// <summary>
-        /// Méthode lireIni qui permet de lire une section et une clé passés en paramètres
+        /// Gets or sets le chemin du fichier.ini à utiliser.
         /// </summary>
-        /// <param name="sectionName"></param>
-        /// <param name="keyName"></param>
-        /// <returns></returns>
-        public string lireIni(string sectionName, string keyName)
+        public string Chemin { get; set; }
+
+        ///////////////////////////////////////////////////////////
+        // METHODES
+        ///////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Méthode lireIni qui permet de lire une section et une clé passées en paramètres.
+        /// </summary>
+        /// <param name="sectionName">Nom de la section à lire.</param>
+        /// <param name="keyName">Clé de la section à lire.</param>
+        /// <returns>La valeur de la clé de la section passée en paramètre.</returns>
+        public string LireIni(string sectionName, string keyName)
         {
-            data = parser.ReadFile(chemin);
-            string res = data[sectionName][keyName];
+            this.data = this.parser.ReadFile(this.Chemin);
+            string res = this.data[sectionName][keyName];
             return res;
         }
 
         /// <summary>
         /// Procédure getDirectoryToSave qui permet de transférer une liste de fichier et répertoires depuis un fichier ini
+        /// Et savoir s'il faut également transférer des répertoires récursifs ou non.
         /// </summary>
-        /// <returns></returns>
-        public List<cRepASauvegarder> getDirectoryToSave()
+        /// <returns>La liste des répertoires transférés.</returns>
+        public List<CRepASauvegarder> GetDirectoryToSave()
         {
             bool play = true;
-            bool playDeux = true;
+
+            // bool playDeux = true;
             int i = 1;
-            List<cRepASauvegarder> listRep = new List<cRepASauvegarder>();
+            List<CRepASauvegarder> listRep = new List<CRepASauvegarder>();
             string fmt = "000.##";
-
-
             while (play)
             {
+                string path = this.LireIni("Repertoires", "Rep_" + i.ToString(fmt));
 
-                string path = lireIni("Repertoires", "Rep_" + i.ToString(fmt));
-
-                string sRecursif = lireIni("RepertoiresRecursif", "Rep_" + i.ToString(fmt));
-                bool bRecursif = (sRecursif == "1");
+                string sRecursif = this.LireIni("RepertoiresRecursif", "Rep_" + i.ToString(fmt));
+                bool bRecursif = sRecursif == "1";
 
                 if (path == null)
                 {
@@ -82,36 +90,33 @@ namespace FicSauve2A
                 }
                 else
                 {
-                    cRepASauvegarder temp = new cRepASauvegarder(path, bRecursif);
+                    CRepASauvegarder temp = new CRepASauvegarder(path, bRecursif);
                     listRep.Add(temp);
                 }
 
                 i++;
-
-
             }
 
             return listRep;
-
         }
-               
+
         /// <summary>
-        /// méthode écrireIni qui permet d'écrire une section et une clé dans le fichier spécifié dans l'attribut chemin 
+        /// Méthode écrireIni qui permet d'écrire une section et une clé dans le fichier spécifié dans le chemin passé en paramètre.
         /// </summary>
-        /// <param name="sectionName"></param>
-        /// <param name="keyName"></param>
-        /// <param name="valeur"></param>
-        /// <returns></returns>
-        public cErreur ecrireIni(string sectionName, string keyName, string valeur)
+        /// <param name="sectionName">Nom de la section à écrire.</param>
+        /// <param name="keyName">Clé de la section à écrire.</param>
+        /// <param name="valeur">Valeur à écrire dans le fichier ini.</param>
+        /// <returns>Retourne le résultat.</returns>
+        public cErreur EcrireIni(string sectionName, string keyName, string valeur)
         {
             cErreur res = new cErreur();
-            data = parser.ReadFile(chemin);
+            this.data = this.parser.ReadFile(this.Chemin);
             try
             {
-                data[sectionName][keyName] = valeur;
-                parser.WriteFile(chemin, data);
+                this.data[sectionName][keyName] = valeur;
+                this.parser.WriteFile(this.Chemin, this.data);
                 res.bErreur = false;
-                res.message = "";
+                res.message = string.Empty;
             }
             catch (Exception e)
             {
@@ -123,43 +128,37 @@ namespace FicSauve2A
         }
 
         /// <summary>
-        /// méthode qui permet de vérifier si deux fichiers ini sont identiques, et le met à jour
-        /// dans le cas contraire
+        /// Méthode qui permet de vérifier si deux fichiers ini sont identiques, et le met à jour
+        /// dans le cas contraire.
         /// </summary>
-        /// <param name="cheminFichierIniLocal"></param>
-        /// <param name="cheminFichierIniServeur"></param>
-        /// <returns></returns>
-        public string checkVersion(string cheminFichierIniLocal, string cheminFichierIniServeur)
+        /// <param name="cheminFichierIniLocal">Chemin local du fichier ini à vérifier.</param>
+        /// <param name="cheminFichierIniServeur">Chemin du serveur du fichier ini à vérifier.</param>
+        /// <returns>La version du fichier ini en local.</returns>
+        public string CheckVersion(string cheminFichierIniLocal, string cheminFichierIniServeur)
         {
             string fichierRecupIniLocal;
             string fichierRecupIniServeur;
 
+            this.Chemin = cheminFichierIniLocal;
+            fichierRecupIniLocal = this.LireIni("Version", "Version");
 
-            chemin = cheminFichierIniLocal;
-            fichierRecupIniLocal = lireIni("Version", "Version");
+            this.ftp.downloadFile(cheminFichierIniServeur, "version.ini");
 
-            ftp.downloadFile(cheminFichierIniServeur, "version.ini");
-
-            chemin = cheminFichierIniServeur;
-            fichierRecupIniServeur = chemin;
-            fichierRecupIniServeur = lireIni("Version", "Version");
-
+            this.Chemin = cheminFichierIniServeur;
+            fichierRecupIniServeur = this.Chemin;
+            fichierRecupIniServeur = this.LireIni("Version", "Version");
 
             if (fichierRecupIniLocal != fichierRecupIniServeur)
             {
-                MessageBox.Show($"La version n'est pas à jour ! La version du serveur est {fichierRecupIniServeur}");              
-                ftp.downloadFile("Update.exe", "FicSauve2A.exe");
-                
+                MessageBox.Show($"La version n'est pas à jour ! La version du serveur est {fichierRecupIniServeur}");
+                this.ftp.downloadFile("Update.exe", "FicSauve2A.exe");
             }
             else
             {
                 MessageBox.Show("Les deux versions sont identiques");
             }
 
-            
-
             return "Version locale = " + fichierRecupIniLocal;
         }
-        
     }
 }

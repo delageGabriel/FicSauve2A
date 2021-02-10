@@ -15,7 +15,7 @@ namespace FicSauve2A
         static void Main(string[] args)
         {
             INI ini = new INI(@"FicSauve2A\test.ini");
-            cFTP ftp = new cFTP(ini.lireIni("ServeurFTP", "AdresseServeur"), ini.lireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.lireIni("ServeurFTP", "MP")));
+            cFTP ftp = new cFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
 
 #if UPDATE
             string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");

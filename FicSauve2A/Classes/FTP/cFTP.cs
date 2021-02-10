@@ -172,7 +172,7 @@ namespace FicSauve2A
         /// <param name="pFichier"></param>
         /// <param name="cheminDuFichier"></param>
         /// <returns></returns>
-        public cErreur fichierTransfert(List<cFichier> fichiers, ProgressBar progressBar, int TailleMax = 0)
+        public cErreur fichierTransfert(List<CFichier> fichiers, ProgressBar progressBar, int TailleMax = 0)
         {
             // Instanciation de l'objet Res de la classe cErreur
             cErreur Res = new cErreur();
@@ -180,13 +180,13 @@ namespace FicSauve2A
 
             int valeurEnCoursPB = 0;
 
-            foreach (cFichier fichier in fichiers)
+            foreach (CFichier fichier in fichiers)
             {
 
                 //ManualResetEvent waitObject;
 
                 // Instanciation de l'objet request de la classe FtpWebRequest, avec la requête qui contiendra l'URI + le nom du fichier à transférer
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(target + fichier.cheminDistant);
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(target + fichier.CheminDistant);
 
                 // La méthode de la classe WebRequest à utiliser est « UploadFile »
                 request.Method = WebRequestMethods.Ftp.UploadFile;
@@ -194,14 +194,14 @@ namespace FicSauve2A
                 // Récupère l'identifiant et le mot de passe du serveur FTP
                 request.Credentials = cred;
                 state.Request = request;
-                state.FileName = fichier.cheminLocal;
+                state.FileName = fichier.CheminLocal;
                 //waitObject = state.OperationComplete;
                 //request.BeginGetRequestStream(
                 //    new AsyncCallback(AsynchronousFtpUpLoader.EndGetStreamCallback),
                 //    state
                 //);
 
-                using (Stream fileStream = File.OpenRead(fichier.cheminLocal))
+                using (Stream fileStream = File.OpenRead(fichier.CheminLocal))
                 using (Stream ftpStream = request.GetRequestStream())
                 {
 
@@ -211,7 +211,7 @@ namespace FicSauve2A
                     }
                     else
                     {
-                        fichier.taille = (int)fileStream.Length;
+                        fichier.Taille = (int)fileStream.Length;
                     }
 
                     if (progressBar != null)
@@ -239,7 +239,7 @@ namespace FicSauve2A
 
                 //waitObject.WaitOne();
 
-                valeurEnCoursPB += fichier.taille;
+                valeurEnCoursPB += fichier.Taille;
 
                 if (state.OperationException != null)
                 {
@@ -270,7 +270,7 @@ namespace FicSauve2A
             cErreur Res = new cErreur();
 
             int tailleMax = 0;
-            List<cFichier> fichiersATransferer = new List<cFichier>();
+            List<CFichier> fichiersATransferer = new List<CFichier>();
 
             string dossierRacine = Path.GetDirectoryName(cheminDuDossier);
             dossierRacine = dossierRacine.Split('\\').Last<string>();
@@ -282,14 +282,14 @@ namespace FicSauve2A
             {
                 string cheminDestination = dossierRacine + "/";
 
-                cFichier tmp = new cFichier();
-                tmp.cheminLocal = cheminDuDossier + Path.GetFileName(fichier);
-                tmp.cheminDistant = cheminDestination + Path.GetFileName(fichier);
+                CFichier tmp = new CFichier();
+                tmp.CheminLocal = cheminDuDossier + Path.GetFileName(fichier);
+                tmp.CheminDistant = cheminDestination + Path.GetFileName(fichier);
 
-                using (Stream fileStream = File.OpenRead(tmp.cheminLocal))
+                using (Stream fileStream = File.OpenRead(tmp.CheminLocal))
                 {
-                    tmp.taille = (int)fileStream.Length;
-                    tailleMax += tmp.taille;
+                    tmp.Taille = (int)fileStream.Length;
+                    tailleMax += tmp.Taille;
                 }
 
                 fichiersATransferer.Add(tmp);
@@ -312,14 +312,14 @@ namespace FicSauve2A
                     {
                         string cheminDestination = dossierRacine + "/" + name + "/";
 
-                        cFichier tmp = new cFichier();
-                        tmp.cheminLocal = fichier;
-                        tmp.cheminDistant = cheminDestination + Path.GetFileName(fichier);
+                        CFichier tmp = new CFichier();
+                        tmp.CheminLocal = fichier;
+                        tmp.CheminDistant = cheminDestination + Path.GetFileName(fichier);
 
-                        using (Stream fileStream = File.OpenRead(tmp.cheminLocal))
+                        using (Stream fileStream = File.OpenRead(tmp.CheminLocal))
                         {
-                            tmp.taille = (int)fileStream.Length;
-                            tailleMax += tmp.taille;
+                            tmp.Taille = (int)fileStream.Length;
+                            tailleMax += tmp.Taille;
                         }
 
                         fichiersATransferer.Add(tmp);
