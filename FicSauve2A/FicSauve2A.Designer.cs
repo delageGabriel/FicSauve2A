@@ -33,7 +33,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(124, 76);
+            this.progressBar.Location = new System.Drawing.Point(96, 59);
             this.progressBar.Maximum = 0;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(248, 23);
@@ -44,7 +44,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(466, 180);
+            this.ClientSize = new System.Drawing.Size(454, 150);
             this.Controls.Add(this.progressBar);
             this.Name = "FicSauve2A";
             this.Text = "FicSauveA2";

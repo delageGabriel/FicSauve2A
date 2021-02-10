@@ -26,7 +26,7 @@ namespace FicSauve2A
 
 
         /// <summary>
-        /// Méthode qui va supprimer le dossier avec le nom passé en paramètres
+        /// Méthode qui va supprimer le dossier avec le nom passé en paramètres.
         /// </summary>
         /// <param name="pDossier"></param>
         /// <returns></returns>
@@ -71,7 +71,7 @@ namespace FicSauve2A
         }
 
         /// <summary>
-        /// méthode qui va créer un dossier avec le nom passé en paramètres
+        /// méthode qui va créer un dossier avec le nom passé en paramètres.
         /// </summary>
         /// <param name="pDossier"></param>
         /// <returns></returns>
@@ -116,7 +116,7 @@ namespace FicSauve2A
 
         /// <summary>
         /// Méthode qui va renommer le fichier avec le nom passé dans le paramètre nouveauNomFichier,
-        /// le nom du fichier à modifier est quant à lui à passer dans le premier paramètre
+        /// le nom du fichier à modifier est quant à lui à passer dans le premier paramètre.
         /// </summary>
         /// <param name="pFichier"></param>
         /// <param name="nouveauNomFichier"></param>
@@ -167,7 +167,7 @@ namespace FicSauve2A
 
         /// <summary>
         /// Méthode qui va transférer le fichier avec le nom passé en paramètre dans pFichier. Le chemin du fichier est à placer
-        /// à la place du deuxième paramètre
+        /// à la place du deuxième paramètre.
         /// </summary>
         /// <param name="pFichier"></param>
         /// <param name="cheminDuFichier"></param>
@@ -341,12 +341,25 @@ namespace FicSauve2A
             return Res;
         }
 
+        /// <summary>
+        /// Méthode qui permet télécharger un fichier depuis le serveur ftp
+        /// cheminLocalTelechargement = chemin de destination du fichier à télécharger 
+        /// nomFichier = son nom une fois téléchargé.
+        /// </summary>
+        /// <param name="cheminLocalTelechargement"></param>
+        /// <param name="nomFichier"></param>
+        /// <returns></returns>
         public cErreur downloadFile(string cheminLocalTelechargement, string nomFichier)
         {
             cErreur Res = new cErreur();
 
+            // L'objet client de la classe WebClient est créé.
             WebClient client = new WebClient();
+            
+            // On récupère l'identifiant et le mot de passe depuis l'attribut cred.
             client.Credentials = cred;
+
+            // Utilisation de
             client.DownloadFile(
                 target + nomFichier, cheminLocalTelechargement);
 
