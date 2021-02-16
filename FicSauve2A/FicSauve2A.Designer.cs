@@ -29,22 +29,34 @@
         private void InitializeComponent()
         {
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(96, 59);
+            this.progressBar.Location = new System.Drawing.Point(94, 87);
             this.progressBar.Maximum = 0;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(248, 23);
             this.progressBar.TabIndex = 9;
             this.progressBar.Click += new System.EventHandler(this.progressBar_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(184, 45);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // FicSauve2A
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 150);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.progressBar);
             this.Name = "FicSauve2A";
             this.Text = "FicSauveA2";
@@ -54,6 +66,7 @@
 
         #endregion
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button button1;
     }
 }
 

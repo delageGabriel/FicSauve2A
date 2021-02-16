@@ -1,6 +1,8 @@
-﻿// <copyright file="INI.cs" company="PlaceholderCompany">
+﻿/// <summary>
+//<copyright file="INI.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+/// </summary>
 
 namespace FicSauve2A
 {
@@ -20,7 +22,7 @@ namespace FicSauve2A
         ///////////////////////////////////////////////////////////
         private IniData data;
         private FileIniDataParser parser;
-        private cFTP ftp;
+        private CFTP ftp;
 
         ///////////////////////////////////////////////////////////
         // CONSTRUCTEUR
@@ -35,7 +37,7 @@ namespace FicSauve2A
         {
             this.Chemin = chemin;
             this.parser = new FileIniDataParser();
-            this.ftp = new cFTP(this.LireIni("ServeurFTP", "AdresseServeur"), this.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(this.LireIni("ServeurFTP", "MP")));
+            this.ftp = new CFTP(this.LireIni("ServeurFTP", "AdresseServeur"), this.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(this.LireIni("ServeurFTP", "MP")));
         }
 
         ///////////////////////////////////////////////////////////
@@ -43,8 +45,11 @@ namespace FicSauve2A
         ///////////////////////////////////////////////////////////
 
         /// <summary>
-        /// Gets or sets le chemin du fichier.ini à utiliser.
+        /// Gets or sets
         /// </summary>
+        /// <value>
+        /// <placeholder>Le chemin du fichier.ini à utiliser.</placeholder>
+        /// </value>
         public string Chemin { get; set; }
 
         ///////////////////////////////////////////////////////////
@@ -80,9 +85,10 @@ namespace FicSauve2A
             while (play)
             {
                 string path = this.LireIni("Repertoires", "Rep_" + i.ToString(fmt));
-
                 string sRecursif = this.LireIni("RepertoiresRecursif", "Rep_" + i.ToString(fmt));
+                string sGrosRecursif = this.LireIni("RepertoiresAvecGrosFichiers", "Rep_" + i.ToString(fmt));
                 bool bRecursif = sRecursif == "1";
+                bool bGrosRecursif = sGrosRecursif == "1";
 
                 if (path == null)
                 {
@@ -91,7 +97,9 @@ namespace FicSauve2A
                 else
                 {
                     CRepASauvegarder temp = new CRepASauvegarder(path, bRecursif);
+                    CRepASauvegarder tempDeux = new CRepASauvegarder(path, bGrosRecursif);
                     listRep.Add(temp);
+                    listRep.Add(tempDeux);
                 }
 
                 i++;
@@ -115,13 +123,13 @@ namespace FicSauve2A
             {
                 this.data[sectionName][keyName] = valeur;
                 this.parser.WriteFile(this.Chemin, this.data);
-                res.bErreur = false;
-                res.message = string.Empty;
+                res.BErreur = false;
+                res.Message = string.Empty;
             }
             catch (Exception e)
             {
-                res.bErreur = true;
-                res.message = e.Message;
+                res.BErreur = true;
+                res.Message = e.Message;
             }
 
             return res;
@@ -142,7 +150,7 @@ namespace FicSauve2A
             this.Chemin = cheminFichierIniLocal;
             fichierRecupIniLocal = this.LireIni("Version", "Version");
 
-            this.ftp.downloadFile(cheminFichierIniServeur, "version.ini");
+            this.ftp.DownloadFile(cheminFichierIniServeur, "version.ini");
 
             this.Chemin = cheminFichierIniServeur;
             fichierRecupIniServeur = this.Chemin;
@@ -151,7 +159,7 @@ namespace FicSauve2A
             if (fichierRecupIniLocal != fichierRecupIniServeur)
             {
                 MessageBox.Show($"La version n'est pas à jour ! La version du serveur est {fichierRecupIniServeur}");
-                this.ftp.downloadFile("Update.exe", "FicSauve2A.exe");
+                this.ftp.DownloadFile("Update.exe", "FicSauve2A.exe");
             }
             else
             {

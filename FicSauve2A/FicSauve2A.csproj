@@ -37,6 +37,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>FicSauve2A.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>FicSauve2A.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Update|AnyCPU' ">
     <OutputPath>bin\CheckVersionIni\</OutputPath>
@@ -53,12 +58,14 @@
     <DocumentationFile>
     </DocumentationFile>
     <Optimize>true</Optimize>
+    <CodeAnalysisRuleSet>FicSauve2A.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Sauvegarde|AnyCPU'">
     <OutputPath>bin\Sauvegarde\</OutputPath>
     <DefineConstants>DEBUG;TRACE;SAUVEGARDE</DefineConstants>
     <Prefer32Bit>true</Prefer32Bit>
     <Optimize>true</Optimize>
+    <CodeAnalysisRuleSet>FicSauve2A.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
@@ -82,7 +89,7 @@
     <Compile Include="Classes\cRepASauvegarder.cs" />
     <Compile Include="Classes\FTP\AsynchronousFtpUpLoader.cs" />
     <Compile Include="Classes\FTP\cErreur.cs" />
-    <Compile Include="Classes\FTP\cFTP.cs" />
+    <Compile Include="Classes\FTP\CFTP.cs" />
     <Compile Include="Classes\FTP\FtpState.cs" />
     <Compile Include="Classes\INI.cs" />
     <Compile Include="FicSauve2A.cs">
@@ -114,6 +121,7 @@
     <EmbeddedResource Include="Sauvegarde.resx">
       <DependentUpon>Sauvegarde.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="FicSauve2A.ruleset" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -124,7 +132,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

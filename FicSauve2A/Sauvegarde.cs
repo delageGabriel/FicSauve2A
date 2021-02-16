@@ -12,14 +12,14 @@ namespace FicSauve2A
 {
     public partial class Sauvegarde : Form
     {
-        private cFTP ftp;
+        private CFTP ftp;
         private INI ini;
         public Sauvegarde()
         {
             InitializeComponent();
 
             ini = new INI(@"C:\Users\Utilisateur\source\repos\delageGabriel\FicSauve2A\test.ini");
-            ftp = new cFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
+            ftp = new CFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
 
         }
 
@@ -32,33 +32,33 @@ namespace FicSauve2A
             List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
 
-            Task.Run(() => ftp.fichierTransfert(listeTMP, null));
+            Task.Run(() => ftp.FichierTransfert(listeTMP, null));
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp._supprimeDossier("test");
-            if (retour.bErreur)
+            cErreur retour = ftp.SupprimeDossier("test");
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.creerDossier("test");
-            if (retour.bErreur)
+            cErreur retour = ftp.CreerDossier("test");
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.renommeFichier("test.txt", "test2.txt");
-            if (retour.bErreur)
+            cErreur retour = ftp.RenommeFichier("test.txt", "test2.txt");
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
@@ -66,9 +66,9 @@ namespace FicSauve2A
         private void button5_Click(object sender, EventArgs e)
         {
             cErreur retour = ini.EcrireIni("FFFFFFF", "GUID", "ABCDEFG");
-            if (retour.bErreur)
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
@@ -80,10 +80,10 @@ namespace FicSauve2A
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", null, true);
-            if (retour.bErreur)
+            cErreur retour = ftp.DossierRecursifTransfert(@"C:\Users\Utilisateur\Desktop\Infosftp\", null, true);
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
@@ -92,7 +92,7 @@ namespace FicSauve2A
             List<CRepASauvegarder> listRepASauvegarder = ini.GetDirectoryToSave();
             foreach (CRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.Path + "\\", null, rep.BRecursif);
+                ftp.DossierRecursifTransfert(rep.Path + "\\", null, rep.BRecursif);
             }
         }
 

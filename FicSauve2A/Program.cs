@@ -14,50 +14,32 @@ namespace FicSauve2A
         [STAThread]
         static void Main(string[] args)
         {
-            INI ini = new INI(@"FicSauve2A\test.ini");
-            cFTP ftp = new cFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
+            INI ini = new INI("test.ini");
+            CFTP ftp = new CFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
 
-#if UPDATE
-            string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
-            MessageBox.Show(retour);
-#elif SAUVEGARDE
-            //string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
-            //MessageBox.Show(retour);
+        #if UPDATE
+                    string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
+                    MessageBox.Show(retour);
+        #elif SAUVEGARDE
+                    //string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
+                    //MessageBox.Show(retour);
 
-            if (args.Length > 0 && args[0] == "silent")
-            {
-                string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
-                MessageBox.Show(retour);
+                    if (args.Length > 0 && args[0] == "silent")
+                    {
+                        string retour = ini.CheckVersion(@"FicSauve2A\version.ini", "version.ini");
+                        MessageBox.Show(retour);
 
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Sauvegarde());
-                //switch (args[0])
-                //{
-                //    case "transfert fichier":
-                //        cFichier tmp = new cFichier();
-                //        tmp.cheminLocal = @"Desktop\version.ini";
-                //        tmp.cheminDistant = "version.ini";
-                //        List<cFichier> listeTMP = new List<cFichier>();
-                //        listeTMP.Add(tmp);
-                //        ftp.fichierTransfert(listeTMP, null);
-                //        break;
-                //    case "transfert dossier ini":
-                List<cRepASauvegarder> listRepASauvegarder = ini.getDirectoryToSave();
+                        Application.EnableVisualStyles();
+                        Application.SetCompatibleTextRenderingDefault(false);
+                        Application.Run(new Sauvegarde());
+                        List<CRepASauvegarder> listRepASauvegarder = ini.GetDirectoryToSave();
 
-                foreach (cRepASauvegarder rep in listRepASauvegarder)
-                {
-                    ftp.dossierRecursifTransfert(rep.path + "\\", null, rep.bRecursif);
-                }
-                //    break;
-                //default:
-                //    Console.WriteLine("Cet argument n'est pas pris en charge");
-                //    break;
-
-                //}        
-                
+                        foreach (CRepASauvegarder rep in listRepASauvegarder)
+                        {
+                            ftp.DossierRecursifTransfert(rep.Path + "\\", null, rep.BRecursif);
+                        }                         
             }
-#endif
+        #endif
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new FicSauve2A());

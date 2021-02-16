@@ -16,14 +16,14 @@ namespace FicSauve2A
     public partial class FicSauve2A : Form
     {
 
-        private cFTP ftp;
+        private CFTP ftp;
         private INI ini;
         public FicSauve2A()
         {
             InitializeComponent();
             
-            ini = new INI(@"FicSauve2A\test.ini");
-            ftp = new cFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
+            ini = new INI("test.ini");
+            ftp = new CFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
 
             
         }
@@ -39,34 +39,34 @@ namespace FicSauve2A
             List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
 
-            Task.Run(() => ftp.fichierTransfert(listeTMP, progressBar));           
+            Task.Run(() => ftp.FichierTransfert(listeTMP, progressBar));           
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp._supprimeDossier("test");
-            if (retour.bErreur)
+            cErreur retour = ftp.SupprimeDossier("test");
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.creerDossier("test");
-            if (retour.bErreur)
+            cErreur retour = ftp.CreerDossier("test");
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.renommeFichier("test.txt", "test2.txt");
-            if (retour.bErreur)
+            cErreur retour = ftp.RenommeFichier("test.txt", "test2.txt");
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
@@ -74,9 +74,9 @@ namespace FicSauve2A
         private void button5_Click(object sender, EventArgs e)
         {
             cErreur retour = ini.EcrireIni("FFFFFFF", "GUID", "ABCDEFG");
-            if (retour.bErreur)
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
@@ -89,10 +89,10 @@ namespace FicSauve2A
 
         private void button7_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.dossierRecursifTransfert(@"Desktop\Infosftp\", progressBar, true);
-            if (retour.bErreur)
+            cErreur retour = ftp.DossierRecursifTransfert(@"Desktop\Infosftp\", progressBar, true);
+            if (retour.BErreur)
             {
-                MessageBox.Show(retour.message);
+                MessageBox.Show(retour.Message);
             }
         }
 
@@ -101,7 +101,7 @@ namespace FicSauve2A
             List<CRepASauvegarder> listRepASauvegarder = ini.GetDirectoryToSave();
             foreach (CRepASauvegarder rep in listRepASauvegarder)
             {
-                ftp.dossierRecursifTransfert(rep.Path + "\\", progressBar, rep.BRecursif);
+                ftp.DossierRecursifTransfert(rep.Path + "\\", progressBar, rep.BRecursif);
             }
         }
         private void progressBar_Click(object sender, EventArgs e)
@@ -134,6 +134,15 @@ namespace FicSauve2A
         {
             string retour = ini.CheckVersion(@"FicSauve2A\version.ini", "version.ini");
             MessageBox.Show(retour);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            List<CRepASauvegarder> listRepASauvegarder = ini.GetDirectoryToSave();
+            foreach (CRepASauvegarder rep in listRepASauvegarder)
+            {
+                ftp.DossierRecursifTransfert(rep.Path + "\\", progressBar, rep.BRecursif);
+            }
         }
     }
 }

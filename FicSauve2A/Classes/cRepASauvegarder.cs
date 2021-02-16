@@ -1,6 +1,8 @@
-﻿// <copyright file="cRepASauvegarder.cs" company="PlaceholderCompany">
+﻿/// <summary>
+// <copyright file="cRepASauvegarder.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+/// </summary>
 
 namespace FicSauve2A
 {
