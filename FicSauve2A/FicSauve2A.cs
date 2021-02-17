@@ -21,26 +21,19 @@ namespace FicSauve2A
         public FicSauve2A()
         {
             InitializeComponent();
-            
-            ini = new INI("test.ini");
+
+            ini = new INI(@"C:\Users\Dev\Desktop\FicSauve2A\FicSauve2A\FicSauve2A\bin\CheckVersionIni\test.ini");
             ftp = new CFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
-
-            
         }
-
-
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             CFichier tmp = new CFichier();
-            tmp.CheminLocal = @"Sauvegarde\Sauvegarde.exe";
-            tmp.CheminDistant = "Sauvegarde.exe";
+            tmp.CheminLocal = @"Desktop\version.ini";
+            tmp.CheminDistant = "version.ini";
             List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
-
-            Task.Run(() => ftp.FichierTransfert(listeTMP, progressBar));           
-
+            ftp.FichierTransfert(listeTMP, progressBar);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -63,13 +56,8 @@ namespace FicSauve2A
 
         private void button4_Click(object sender, EventArgs e)
         {
-            cErreur retour = ftp.RenommeFichier("test.txt", "test2.txt");
-            if (retour.BErreur)
-            {
-                MessageBox.Show(retour.Message);
-            }
-        }
 
+        }
 
         private void button5_Click(object sender, EventArgs e)
         {
@@ -104,6 +92,7 @@ namespace FicSauve2A
                 ftp.DossierRecursifTransfert(rep.Path + "\\", progressBar, rep.BRecursif);
             }
         }
+
         private void progressBar_Click(object sender, EventArgs e)
         {
 
@@ -117,7 +106,7 @@ namespace FicSauve2A
 
         private void button10_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -127,22 +116,7 @@ namespace FicSauve2A
 
         private void button11_Click(object sender, EventArgs e)
         {
-            
-        }
 
-        private void button11_Click_1(object sender, EventArgs e)
-        {
-            string retour = ini.CheckVersion(@"FicSauve2A\version.ini", "version.ini");
-            MessageBox.Show(retour);
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            List<CRepASauvegarder> listRepASauvegarder = ini.GetDirectoryToSave();
-            foreach (CRepASauvegarder rep in listRepASauvegarder)
-            {
-                ftp.DossierRecursifTransfert(rep.Path + "\\", progressBar, rep.BRecursif);
-            }
         }
     }
 }

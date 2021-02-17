@@ -150,7 +150,7 @@ namespace FicSauve2A
             this.Chemin = cheminFichierIniLocal;
             fichierRecupIniLocal = this.LireIni("Version", "Version");
 
-            this.ftp.DownloadFile(cheminFichierIniServeur, "version.ini");
+            this.ftp.DownloadFile(cheminFichierIniServeur, @"C:\Users\Dev\Desktop\FicSauve2A\FicSauve2A\FicSauve2A");
 
             this.Chemin = cheminFichierIniServeur;
             fichierRecupIniServeur = this.Chemin;

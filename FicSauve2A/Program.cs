@@ -14,11 +14,11 @@ namespace FicSauve2A
         [STAThread]
         static void Main(string[] args)
         {
-            INI ini = new INI("test.ini");
+            INI ini = new INI(@"C:\Users\Dev\Desktop\FicSauve2A\FicSauve2A\FicSauve2A\bin\CheckVersionIni\test.ini");
             CFTP ftp = new CFTP(ini.LireIni("ServeurFTP", "AdresseServeur"), ini.LireIni("ServeurFTP", "Utilisateur"), cCryptage.Decrypt(ini.LireIni("ServeurFTP", "MP")));
 
         #if UPDATE
-                    string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
+                    string retour = ini.CheckVersion(@"FicSauve2A\version.ini", "version.ini");
                     MessageBox.Show(retour);
         #elif SAUVEGARDE
                     //string retour = ini.checkVersion(@"FicSauve2A\version.ini", "version.ini");
