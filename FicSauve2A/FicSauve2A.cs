@@ -29,7 +29,7 @@ namespace FicSauve2A
         private void button1_Click(object sender, EventArgs e)
         {
             CFichier tmp = new CFichier();
-            tmp.CheminLocal = @"Desktop\version.ini";
+            tmp.CheminLocal = @"C: \Users\Dev\Desktop\version.ini";
             tmp.CheminDistant = "version.ini";
             List<CFichier> listeTMP = new List<CFichier>();
             listeTMP.Add(tmp);
@@ -115,6 +115,11 @@ namespace FicSauve2A
         }
 
         private void button11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
         {
 
         }
